@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DELZ CHECK v10 - Advanced Cyber Intelligence Terminal</title>
+    <style>
+        :root {
+            --bg-primary: #050508;
+            --bg-card: #0c0c10;
+            --bg-card-hover: #121218;
+            --border-subtle: #1c1c28;
+            --border-focus: #2d2d42;
+            
+            --accent-green: #00ff88;
+            --accent-cyan: #00e5ff;
+            --accent-yellow: #ffb700;
+            --accent-red: #ff3355;
+            
+            --text-main: #f8f9fc;
+            --text-muted: #8b8b9e;
+            --text-dim: #555566;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        code, pre, textarea, .score-number, .stat-value, .terminal-title, .status-pill, .badge-demo, .metric-val {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 50% -30%, rgba(0, 255, 136, 0.05) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(0, 229, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .terminal-wrapper {
+            width: 100%;
+            max-width: 780px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- HEADER LAYOUT --- */
+        .terminal-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .brand-area h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .brand-area p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .system-badge {
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .system-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* --- METRICS DASHBOARD --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--border-focus);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .metric-val {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        /* --- INPUT CONSOLE CARD --- */
+        .console-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .console-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        }
+
+        .console-section-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .input-box-wrapper {
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            background: #060609;
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            resize: none;
+            outline: none;
+            transition: all 0.2s ease;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* --- ACTION CONTROLS --- */
+        .action-toolbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            background: #111118;
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-focus);
+            background: #181824;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.97) translateY(0);
+            filter: brightness(0.9);
+        }
+
+        .btn-primary {
+            grid-column: span 3;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #00cc6a 100%);
+            color: #050508;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.25);
+            padding: 14px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1aff94 0%, #00e075 100%);
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.4);
+            color: #000000;
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 0.4s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-anim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* Quick Test Badges */
+        .quick-test-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .quick-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-right: 4px;
+        }
+
+        .badge-demo {
+            background: #08080c;
+            border: 1px dashed var(--border-subtle);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .badge-demo:hover {
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            background: rgba(0, 229, 255, 0.05);
+            transform: translateY(-1px);
+        }
+
+        /* --- SKELETON LOADER --- */
+        .skeleton-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .skeleton-status {
+            text-align: center;
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            animation: pulse-text 1s infinite alternate;
+        }
+
+        @keyframes pulse-text {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        .skeleton-bar {
+            height: 14px;
+            background: linear-gradient(90deg, #111118 25%, #1c1c28 50%, #111118 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite linear;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* --- RESULT OUTPUT PANEL --- */
+        .output-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .score-box {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #060609;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 3px;
+        }
+
+        /* --- VECTOR LIST --- */
+        .vector-list-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .vector-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .vector-item {
+            background: #060609;
+            border: 1px solid var(--border-subtle);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.84rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .vector-item:hover {
+            background: #0b0b10;
+            border-color: var(--border-focus);
+            transform: translateX(4px);
+        }
+
+        .vector-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        /* PURE CSS ICONS */
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .icon-check {
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid var(--accent-green);
+        }
+        .icon-check::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 8px;
+            border: solid var(--accent-green);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            top: 3px;
+        }
+
+        .icon-cross {
+            background: rgba(255, 51, 85, 0.12);
+            border: 1px solid var(--accent-red);
+        }
+        .icon-cross::before, .icon-cross::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background: var(--accent-red);
+        }
+        .icon-cross::before { transform: rotate(45deg); }
+        .icon-cross::after { transform: rotate(-45deg); }
+
+        .icon-warn {
+            background: rgba(255, 183, 0, 0.12);
+            border: 1px solid var(--accent-yellow);
+        }
+        .icon-warn::after {
+            content: '!';
+            color: var(--accent-yellow);
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .pill-good { background: rgba(0, 255, 136, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 136, 0.25); }
+        .pill-warn { background: rgba(255, 183, 0, 0.1); color: var(--accent-yellow); border: 1px solid rgba(255, 183, 0, 0.25); }
+        .pill-bad { background: rgba(255, 51, 85, 0.1); color: var(--accent-red); border: 1px solid rgba(255, 51, 85, 0.25); }
+
+        .output-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .output-actions-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* --- INFO CARDS --- */
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 22px 24px;
+            font-size: 0.84rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .info-card h4 {
+            color: var(--accent-yellow);
+            margin-bottom: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-box h4 {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-list {
+            list-style: none;
+            max-height: 140px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .history-item {
+            font-size: 0.8rem;
+            padding: 10px 12px;
+            background: #060609;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .history-item:hover {
+            border-color: var(--border-focus);
+            color: var(--accent-green);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .shake-anim { animation: shake 0.4s ease; }
+
+        footer {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 10px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-subtle);
+            width: 100%;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 650px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .terminal-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .action-toolbar { grid-template-columns: 1fr 1fr; }
+            .btn-primary { grid-column: span 2; }
+            .output-actions-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-wrapper">
+        <!-- Header Terminal -->
+        <header class="terminal-header">
+            <div class="brand-area">
+                <h1>DELZ CHECK</h1>
+                <p>Cyber Intelligence Terminal</p>
+            </div>
+            <div class="system-badge">v10.0 SECURE</div>
+        </header>
+
+        <!-- Dashboard Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Scans</div>
+                <div class="metric-val" id="statTotal">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Threats Blocked</div>
+                <div class="metric-val" id="statThreats" style="color: var(--accent-red);">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Engine Status</div>
+                <div class="metric-val" style="color: var(--accent-green);">ACTIVE</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Database</div>
+                <div class="metric-val" style="color: var(--accent-cyan);">ONLINE</div>
+            </div>
+        </div>
+
+        <!-- Input Console -->
+        <div class="console-card">
+            <div class="console-section-title"><span>🔍</span> Target Inspection Console</div>
+            
+            <div class="input-stack">
+                <div class="input-box-wrapper">
+                    <textarea id="urlInput" placeholder="Masukkan URL lengkap target (contoh: https://google.com)..." rows="2"></textarea>
+                </div>
+                <div class="input-box-wrapper">
+                    <textarea id="htmlInput" placeholder="[Opsional] Tempel isi HTML / Teks / Skrip web target untuk Deep Content Inspection..." rows="2" style="font-size: 0.8rem; color: var(--text-muted);"></textarea>
+                </div>
+            </div>
+
+            <div class="action-toolbar">
+                <button class="btn" id="btnPaste" type="button">📋 Tempel URL</button>
+                <button class="btn" id="btnScanQR" type="button">📷 Sampel Uji</button>
+                <button class="btn" id="btnClear" type="button">🗑️ Reset</button>
+                <button class="btn btn-primary" id="btnCheck" type="button">⚡ JALANKAN ANALISIS PRESISI</button>
+            </div>
+
+            <div class="quick-test-area">
+                <span class="quick-label">Quick Test:</span>
+                <span class="badge-demo" onclick="setDemo('https://www.google.com', '')">Google (Aman)</span>
+                <span class="badge-demo" onclick="setDemo('https://tiktok-login.top', '<form><input type=password name=pwd><button>Login</button></form>')">Phish + Form</span>
+                <span class="badge-demo" onclick="setDemo('http://bansos-gratis.xyz', '<script>eval(atob(\"malicious\"))</script>')">Bansos + Script</span>
+            </div>
+        </div>
+
+        <!-- Skeleton Loader -->
+        <div class="skeleton-panel" id="skeletonLoader">
+            <div class="skeleton-status" id="loadingText">Menganalisis URL & Vektor Deep Content...</div>
+            <div class="skeleton-bar" style="width: 45%; margin: 0 auto 18px auto; height: 32px;"></div>
+            <div class="skeleton-bar"></div>
+            <div class="skeleton-bar" style="width: 80%;"></div>
+        </div>
+
+        <!-- Output Result Panel -->
+        <div class="output-panel" id="resultContainer">
+            <div class="score-box" id="mainResultCard">
+                <div class="score-number" id="scoreNumber">85</div>
+                <div class="score-badge" id="scoreBadge">AMAN</div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="progressBarFill"></div>
+                </div>
+            </div>
+
+            <div class="vector-list-title">Hasil Analisis & Vektor Indikator Keamanan:</div>
+            <ul class="vector-list" id="detailsList"></ul>
+
+            <div class="output-actions-grid">
+                <a href="#" id="linkVT" target="_blank" class="btn" style="text-decoration:none; font-size:0.78rem;">🛡️ VirusTotal</a>
+                <a href="#" id="linkGSB" target="_blank" class="btn" style="text-decoration:none; font-size:0.78rem;">🔍 Google Safe</a>
+                <a href="https://aduankonten.id/" target="_blank" class="btn" style="text-decoration:none; font-size:0.78rem;">🚨 Lapor Kominfo</a>
+            </div>
+
+            <div class="output-actions-grid-2">
+                <button class="btn" id="btnCopyResult" type="button">📋 Copy Hasil ke WA</button>
+                <button class="btn" id="btnExportJSON" type="button">📥 Export JSON Report</button>
+            </div>
+        </div>
+
+        <!-- Education Box -->
+        <div class="info-card">
+            <h4>💡 Tips Keamanan Siber</h4>
+            <p id="eduTipText">Memuat tips anti-phising...</p>
+        </div>
+
+        <!-- History Box -->
+        <div class="info-card history-box" id="historyBox" style="display:none;">
+            <h4>
+                <span>Riwayat Pengecekan Terakhir</span>
+                <span style="font-size: 0.68rem; color: var(--accent-cyan); cursor: pointer;" onclick="clearHistory()">[Clear]</span>
+            </h4>
+            <ul class="history-list" id="historyList"></ul>
+        </div>
+    </div>
+
+    <footer>
+        Dibuat oleh DELZ PROJECT - Jangan pernah isi password di link mencurigakan
+    </footer>
+
+    <script>
+        document.querySelectorAll('.btn, .badge-demo').forEach(button => {
+            button.addEventListener('click', function (e) {
+                let rect = button.getBoundingClientRect();
+                let x = e.clientX - rect.left;
+                let y = e.clientY - rect.top;
+                let ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                button.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 400);
+            });
+        });
+
+        const eduTips = [
+            "Pastikan Anda selalu memasukkan format URL atau domain yang valid agar mesin heuristik dapat menganalisis secara akurat.",
+            "Pemeriksaan isi dalam (Deep Content) mendeteksi form login tersembunyi, skrip berbahaya, dan input kredensial palsu.",
+            "Selalu pastikan Anda berinteraksi dengan domain resmi perusahaan yang terverifikasi."
+        ];
+
+        function loadRandomTip() {
+            document.getElementById('eduTipText').innerText = eduTips[Math.floor(Math.random() * eduTips.length)];
+        }
+        loadRandomTip();
+
+        let totalChecked = parseInt(localStorage.getItem('delz_total_checked') || 0);
+        let totalThreats = parseInt(localStorage.getItem('delz_total_threats') || 0);
+        document.getElementById('statTotal').innerText = totalChecked;
+        document.getElementById('statThreats').innerText = totalThreats;
+
+        function setDemo(url, htmlContent) {
+            document.getElementById('urlInput').value = url;
+            document.getElementById('htmlInput').value = htmlContent;
+        }
+
+        document.getElementById('btnPaste').addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('urlInput').value = text;
+            } catch (err) {
+                alert('Gagal membaca clipboard. Tempel manual pakai Ctrl+V.');
+            }
+        });
+
+        document.getElementById('btnScanQR').addEventListener('click', () => {
+            document.getElementById('urlInput').value = "https://tiktok-login-verifikasi.top";
+            document.getElementById('htmlInput').value = '<form action="steal.php"><input type="password" name="pass"><input type="submit" value="Klaim Hadiah"></form>';
+            alert('Data sampel phising dimasukkan ke kolom!');
+        });
+
+        document.getElementById('btnClear').addEventListener('click', () => {
+            document.getElementById('urlInput').value = '';
+            document.getElementById('htmlInput').value = '';
+            document.getElementById('resultContainer').style.display = 'none';
+        });
+
+        function updateHistory(url, score) {
+            let history = JSON.parse(localStorage.getItem('delz_history') || '[]');
+            history.unshift({ url, score, time: new Date().toLocaleTimeString() });
+            if (history.length > 8) history.pop();
+            localStorage.setItem('delz_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let history = JSON.parse(localStorage.getItem('delz_history') || '[]');
+            const historyBox = document.getElementById('historyBox');
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length > 0) {
+                historyBox.style.display = 'block';
+                historyList.innerHTML = '';
+                history.forEach(item => {
+                    let li = document.createElement('li');
+                    li.className = 'history-item';
+                    let color = item.score >= 80 ? 'var(--accent-green)' : (item.score >= 50 ? 'var(--accent-yellow)' : 'var(--accent-red)');
+                    li.innerHTML = `<span style="max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.url}</span> <b style="color: ${color}">${item.score}/100</b>`;
+                    li.onclick = () => {
+                        document.getElementById('urlInput').value = item.url;
+                        document.getElementById('btnCheck').click();
+                    };
+                    historyList.appendChild(li);
+                });
+            } else {
+                historyBox.style.display = 'none';
+            }
+        }
+        renderHistory();
+
+        function clearHistory() {
+            localStorage.removeItem('delz_history');
+            renderHistory();
+        }
+
+        function analyzeURL(rawUrl, htmlContent) {
+            let cleanUrl = rawUrl.trim();
+            if (!cleanUrl) {
+                return { score: 0, logs: [{ text: 'URL target kosong.', status: 'bad', label: 'BAHAYA' }] };
+            }
+
+            let parsedUrl;
+            try {
+                if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+                    cleanUrl = 'http://' + cleanUrl;
+                }
+                parsedUrl = new URL(cleanUrl);
+            } catch (e) {
+                return { score: 0, logs: [{ text: 'Format URL tidak valid / rusak.', status: 'bad', label: 'BAHAYA' }] };
+            }
+
+            const hostname = parsedUrl.hostname.toLowerCase();
+            const protocol = parsedUrl.protocol;
+            const fullUrl = cleanUrl.toLowerCase();
+            const content = htmlContent.toLowerCase();
+
+            const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+            const hasDot = hostname.includes('.');
+            if (!hasDot && hostname !== 'localhost' && !ipRegex.test(hostname)) {
+                return {
+                    score: 15,
+                    logs: [{ text: `Domain "${hostname}" tidak valid atau format penulisan salah.`, status: 'bad', label: 'BAHAYA' }]
+                };
+            }
+
+            let score = 100;
+            let logs = [];
+
+            if (protocol === 'http:') {
+                score -= 20;
+                logs.push({ text: 'Protokol URL menggunakan HTTP (Tanpa enkripsi SSL)', status: 'bad', label: 'BAHAYA' });
+            } else {
+                logs.push({ text: 'Protokol URL menggunakan HTTPS (Enkripsi aktif)', status: 'good', label: 'AMAN' });
+            }
+
+            if (ipRegex.test(hostname)) {
+                score -= 25;
+                logs.push({ text: 'URL menggunakan Alamat IP mentah, bukan domain resmi', status: 'bad', label: 'BAHAYA' });
+            } else {
+                logs.push({ text: 'URL menggunakan struktur domain standar', status: 'good', label: 'AMAN' });
+            }
+
+            const badTlds = ['.xyz', '.top', '.buzz', '.click', '.tk', '.ml', '.ga', '.cf', '.gq', '.shop', '.online'];
+            if (badTlds.some(tld => hostname.endsWith(tld))) {
+                score -= 15;
+                logs.push({ text: 'Ekstensi domain (TLD) menggunakan ekstensi murah/berisiko', status: 'warn', label: 'WASPADA' });
+            } else {
+                logs.push({ text: 'Ekstensi domain menggunakan TLD umum/aman', status: 'good', label: 'AMAN' });
+            }
+
+            const brands = ['tiktok', 'shopee', 'tokopedia', 'whatsapp', 'facebook', 'instagram', 'dana', 'ovo', 'bri', 'bca', 'mandiri', 'bni'];
+            let hasBrand = brands.some(brand => hostname.includes(brand));
+            let hasHyphenOrExtra = hostname.includes('-') || hostname.includes('_') || hostname.split('.').length > 2;
+            if (hasBrand && hasHyphenOrExtra) {
+                score -= 20;
+                logs.push({ text: 'Nama domain meniru brand besar dengan tambahan karakter (Impersonation)', status: 'bad', label: 'BAHAYA' });
+            } else {
+                logs.push({ text: 'Tidak ada indikasi pemalsuan nama brand pada domain', status: 'good', label: 'AMAN' });
+            }
+
+            if (content.trim().length > 0) {
+                let hasPasswordInput = content.includes('type="password"') || content.includes("type='password'") || content.includes('name="pass"') || content.includes('name="pwd"');
+                let isOfficialDomain = brands.some(b => hostname.includes(b + '.co') || hostname.includes(b + '.com') || hostname === b + '.id');
+                
+                if (hasPasswordInput && !isOfficialDomain) {
+                    score -= 30;
+                    logs.push({ text: 'Isi Halaman: Terdeteksi form input password pada domain bukan resmi (Phishing Form)', status: 'bad', label: 'BAHAYA' });
+                } else if (hasPasswordInput) {
+                    logs.push({ text: 'Isi Halaman: Form input password ditemukan pada domain terverifikasi', status: 'good', label: 'AMAN' });
+                } else {
+                    logs.push({ text: 'Isi Halaman: Tidak ditemukan form input password/kredensial', status: 'good', label: 'AMAN' });
+                }
+
+                let hasExternalAction = content.includes('action="http') && !content.includes('action="' + protocol + '//' + hostname);
+                if (hasExternalAction) {
+                    score -= 25;
+                    logs.push({ text: 'Isi Halaman: Form mengirim data (action target) ke server luar/berbeda', status: 'bad', label: 'BAHAYA' });
+                } else {
+                    logs.push({ text: 'Isi Halaman: Target pengiriman form aman / internal', status: 'good', label: 'AMAN' });
+                }
+
+                let hasDangerousScript = content.includes('eval(') || content.includes('atob(');
+                if (hasDangerousScript) {
+                    score -= 20;
+                    logs.push({ text: 'Isi Halaman: Mengandung fungsi skrip tersembunyi / obfuscation', status: 'bad', label: 'BAHAYA' });
+                } else {
+                    logs.push({ text: 'Isi Halaman: Tidak ditemukan fungsi eksekusi skrip berbahaya', status: 'good', label: 'AMAN' });
+                }
+            } else {
+                logs.push({ text: 'Isi Halaman: Tidak ada konten HTML/Teks yang disertakan untuk Deep Scan', status: 'warn', label: 'WASPADA' });
+            }
+
+            if (score < 0) score = 0;
+            return { score, logs };
+        }
+
+        document.getElementById('btnCheck').addEventListener('click', () => {
+            const rawUrl = document.getElementById('urlInput').value;
+            const htmlContent = document.getElementById('htmlInput').value;
+
+            if (!rawUrl.trim()) {
+                alert('Masukkan URL target terlebih dahulu!');
+                return;
+            }
+
+            const skeleton = document.getElementById('skeletonLoader');
+            const resultContainer = document.getElementById('resultContainer');
+            const mainCard = document.getElementById('mainResultCard');
+            
+            resultContainer.style.display = 'none';
+            skeleton.style.display = 'block';
+            skeleton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            const loadingTexts = [
+                "Menganalisis struktur URL & DNS...",
+                "Melakukan Deep Content Inspection...",
+                "Memeriksa form kredensial & skrip...",
+                "Menyusun laporan keamanan..."
+            ];
+            let textIdx = 0;
+            let textInterval = setInterval(() => {
+                textIdx = (textIdx + 1) % loadingTexts.length;
+                document.getElementById('loadingText').innerText = loadingTexts[textIdx];
+            }, 300);
+
+            setTimeout(() => {
+                clearInterval(textInterval);
+                skeleton.style.display = 'none';
+
+                const analysis = analyzeURL(rawUrl, htmlContent);
+                const score = analysis.score;
+                const logs = analysis.logs;
+
+                totalChecked++;
+                localStorage.setItem('delz_total_checked', totalChecked);
+                document.getElementById('statTotal').innerText = totalChecked;
+
+                if (score < 50) {
+                    totalThreats++;
+                    localStorage.setItem('delz_total_threats', totalThreats);
+                    document.getElementById('statThreats').innerText = totalThreats;
+                }
+
+                updateHistory(rawUrl, score);
+
+                const scoreNum = document.getElementById('scoreNumber');
+                const scoreBadge = document.getElementById('scoreBadge');
+                const progressFill = document.getElementById('progressBarFill');
+                const detailsList = document.getElementById('detailsList');
+
+                scoreNum.innerText = score;
+                progressFill.style.width = score + '%';
+
+                mainCard.classList.remove('shake-anim');
+
+                if (score >= 80) {
+                    scoreNum.style.color = 'var(--accent-green)';
+                    scoreBadge.style.background = 'rgba(0, 255, 136, 0.15)';
+                    scoreBadge.style.color = 'var(--accent-green)';
+                    scoreBadge.innerText = 'AMAN - Terverifikasi Bersih';
+                    progressFill.style.background = 'var(--accent-green)';
+                } else if (score >= 50) {
+                    scoreNum.style.color = 'var(--accent-yellow)';
+                    scoreBadge.style.background = 'rgba(255, 183, 0, 0.15)';
+                    scoreBadge.style.color = 'var(--accent-yellow)';
+                    scoreBadge.innerText = 'WASPADA - Indikasi Mencurigakan';
+                    progressFill.style.background = 'var(--accent-yellow)';
+                } else {
+                    scoreNum.style.color = 'var(--accent-red)';
+                    scoreBadge.style.background = 'rgba(255, 51, 85, 0.15)';
+                    scoreBadge.style.color = 'var(--accent-red)';
+                    scoreBadge.innerText = 'BAHAYA - PHISING TERDETEKSI!';
+                    progressFill.style.background = 'var(--accent-red)';
+                    mainCard.classList.add('shake-anim');
+                }
+
+                detailsList.innerHTML = '';
+                logs.forEach((log, index) => {
+                    let li = document.createElement('li');
+                    li.className = 'vector-item';
+                    li.style.animationDelay = (index * 0.04) + 's';
+
+                    let iconClass = 'icon-check';
+                    let pillClass = 'pill-good';
+                    if (log.status === 'bad') {
+                        iconClass = 'icon-cross';
+                        pillClass = 'pill-bad';
+                    } else if (log.status === 'warn') {
+                        iconClass = 'icon-warn';
+                        pillClass = 'pill-warn';
+                    }
+
+                    li.innerHTML = `
+                        <div class="vector-content">
+                            <div class="status-icon ${iconClass}"></div>
+                            <span>${log.text}</span>
+                        </div>
+                        <span class="status-pill ${pillClass}">${log.label}</span>
+                    `;
+                    detailsList.appendChild(li);
+                });
+
+                let encodedUrl = encodeURIComponent(rawUrl.trim());
+                document.getElementById('linkVT').href = `https://www.virustotal.com/gui/home/url?query=${encodedUrl}`;
+                document.getElementById('linkGSB').href = `https://transparencyreport.google.com/safe-browsing/search?url=${encodedUrl}`;
+
+                resultContainer.style.display = 'block';
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            }, 1000);
+        });
+
+        document.getElementById('btnCopyResult').addEventListener('click', () => {
+            const url = document.getElementById('urlInput').value;
+            const score = document.getElementById('scoreNumber').innerText;
+            const badge = document.getElementById('scoreBadge').innerText;
+            
+            let text = `🚨 *HASIL ANALISIS DELZ CHECK v10* 🚨\n\n`;
+            text += `🔗 *Target URL:* ${url}\n`;
+            text += `📊 *Skor Keamanan:* ${score}/100\n`;
+            text += `⚠️ *Status:* ${badge}\n\n`;
+            text += `Dipindai menggunakan DELZ CHECK Cyber Intelligence Terminal.`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Hasil analisis berhasil disalin untuk dibagikan ke WhatsApp!');
+            });
+        });
+
+        document.getElementById('btnExportJSON').addEventListener('click', () => {
+            const url = document.getElementById('urlInput').value;
+            const score = document.getElementById('scoreNumber').innerText;
+            const badge = document.getElementById('scoreBadge').innerText;
+            
+            let reportObj = {
+                tool: "DELZ CHECK v10 Terminal",
+                author: "DELZ PROJECT",
+                timestamp: new Date().toISOString(),
+                target_url: url,
+                security_score: score,
+                status: badge
+            };
+
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reportObj, null, 2));
+            let downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "delz_threat_report.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        });
+    </script>
+</body>
+</html>
